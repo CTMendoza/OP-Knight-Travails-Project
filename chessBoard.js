@@ -10,19 +10,26 @@ function knightMoves (start, end) {
         return checkCoordinate(end,'end')
     }
     // initialize que with current position and path
-    que.push([currentPos,[start]])
-    // create new positions for current position
-    let newPos = []
+    que.push([start,[start]])
+
     while(que.length > 0) {
-    let firstElement = que.shift()
+    // assigne values of shifted que element to currentNode and pathSoFar
+    let [currentNode, pathSoFar] = que.shift()
+
+    //check if currentNode coordinates are equal to end coordinates.
+    if(currentNode[0] === end[0] && currentNode[1] === end[1]) {
+        //return pathSofar if true which will return the shortest path to the end coordinates
+        return `You made it in ${pathSoFar.length - 1} moves! Here's your path:\n` +
+            pathSoFar.map(pos => `[${pos[0]}, ${pos[1]}]`).join(" -> ");
+    }
+
+    // loop through moveSet array and create new positions for given currentNode
     moveSet.forEach((element) => {
-        newPos.push([firstElement[0] + element[0], firstElement[1] + element[1]])
-    })
-    newPos.forEach((element) => {
-        if(isValidPosition(element)) {
-            let pathSoFar = firstElement[1]
-            let newPath = [... pathSoFar, element]
-            que.push([element,[newPath]])
+        let newPos = [currentNode[0] + element[0], currentNode[1] + element[1]]
+        // if newPos is true create a newPath array which has pathSoFar and newPos
+        if(isValidPosition(newPos)) {
+            let newPath = [...pathSoFar, newPos];
+            que.push([newPos, newPath]);
         }
     })
 }
@@ -45,3 +52,5 @@ function isValidPosition(pos) {
     pos[1] >= 0 && pos[1] <= 7
   );
 }
+
+console.log(knightMoves([5,4], [1,7]))
